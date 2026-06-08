@@ -10,7 +10,7 @@
   </head>
 <div class="container-fluid">
   <div class="row">
-    <main class="col-12">
+   <main class="col-12" x-data="{ musiques: [] }" x-init="musiques = await chargerMusiques()">
       <header class="p-4 mb-4 text-white text-center" style="background-color: #2f9eb1;">
         <h1>les musiques de morgane</h1>
         <p>sous titre</p>
