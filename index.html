@@ -9,7 +9,7 @@
     <title>Spoti'stat</title>
   </head>
   <body>
-    <div class="container-fluid">
+    <div class="container-fluid px-0">
       <div class="row">
         <main class="col-12" x-data="{ musiques: [] }" x-init="chargerMusiques().then(data => musiques = data)">
           <header class="p-4 mb-4 text-white text-center" style="background-color: #2f9eb1;">
@@ -17,8 +17,10 @@
             <p>sous titre</p>
           </header>
 
-          <!-- test Alpine -->
-          <p x-text="'Alpine OK, ' + musiques.length + ' morceaux chargés'"></p>
+      <div x-for="morceau in musiques" :key="morceau.id">
+      <p x-text="morceau.name"></p>
+      </div>
+         
 
         </main>
       </div>
