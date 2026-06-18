@@ -13,7 +13,7 @@
     <div class="container-fluid px-0">
       <div class="row">
         <main class="col-12"
-              x-data="{ musiques: [] }"
+              x-data="{ musiques: [], morceauActuel: null }"
               x-init="chargerMusiques().then(data => { musiques = data; creerGraphiqueArtistes(data); creerGraphiqueGenres(data); })">
 
           <header class="p-4 mb-4 text-white text-center" style="background-color: #2f9eb1;">
@@ -75,7 +75,11 @@
                           <td class="text-muted" x-text="morceau.artists.map(a => a.name).join(', ')"></td>
                           <td class="text-muted" x-text="morceau.album.name"></td>
                           <td>
-                            <button class="btn btn-primary btn-sm" type="button">Détails</button>
+                            <button type="button" class="btn btn-primary btn-sm"
+                                    @click="morceauActuel = morceau"
+                                    data-bs-toggle="modal" data-bs-target="#modalDetails">
+                              Détails
+                            </button>
                           </td>
                         </tr>
                       </template>
@@ -85,6 +89,88 @@
               </div>
             </section>
 
+          </div>
+
+          <!-- Modale "Détails du morceau" -->
+          <div class="modal fade" id="modalDetails" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Détails du morceau</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="row g-4">
+                    <div class="col-md-4 text-center">
+                      <img :src="morceauActuel?.album?.images?.[2]?.url" class="img-fluid rounded mb-2"
+                           :alt="morceauActuel?.album?.name">
+                      <h6 class="mb-0" x-text="morceauActuel?.album?.name"></h6>
+                      <p class="text-muted small mb-2">
+                        <span x-text="formaterDate(morceauActuel?.album?.release_date)"></span>
+                        • <span x-text="morceauActuel?.album?.total_tracks"></span> titres
+                      </p>
+                      <span class="badge bg-success" x-text="'Popularité: ' + morceauActuel?.album?.popularity + '/100'"></span>
+                    </div>
+
+                    <div class="col-md-8">
+                      <h4 x-text="morceauActuel?.name"></h4>
+
+                      <p class="fw-semibold mt-3 mb-1">Preview audio</p>
+                      <audio :src="morceauActuel?.preview_url" controls class="w-100 mb-3"></audio>
+
+                      <p class="fw-semibold mb-2">Informations sur le morceau</p>
+                      <div class="d-flex justify-content-between border-bottom py-2">
+                        <span>Durée</span>
+                        <span class="badge bg-primary" x-text="formaterDuree(morceauActuel?.duration_ms)"></span>
+                      </div>
+                      <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                        <span>Popularité</span>
+                        <div class="d-flex align-items-center gap-2">
+                          <div class="progress" style="width:120px; height:8px;">
+                            <div class="progress-bar bg-info" :style="'width:' + morceauActuel?.popularity + '%'"></div>
+                          </div>
+                          <span x-text="morceauActuel?.popularity + '/100'"></span>
+                        </div>
+                      </div>
+                      <div class="d-flex justify-content-between border-bottom py-2">
+                        <span>Numéro de piste</span>
+                        <span x-text="morceauActuel?.track_number"></span>
+                      </div>
+                      <div class="d-flex justify-content-between py-2">
+                        <span>Explicit</span>
+                        <span x-text="morceauActuel?.explicit ? 'Oui' : 'Non'"></span>
+                      </div>
+
+                      <p class="fw-semibold mt-3 mb-2">Artistes</p>
+                      <template x-for="artiste in (morceauActuel?.artists || [])" :key="artiste.id">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                          <img :src="artiste.images?.[0]?.url" class="rounded-circle" width="40" height="40">
+                          <div>
+                            <div x-text="artiste.name"></div>
+                            <small class="text-muted">
+                              Popularité: <span x-text="artiste.popularity"></span>/100
+                              — Followers: <span x-text="artiste.followers?.total"></span>
+                            </small>
+                          </div>
+                        </div>
+                      </template>
+
+                      <p class="fw-semibold mt-3 mb-2">Genres</p>
+                      <template x-for="genre in [...new Set((morceauActuel?.artists || []).flatMap(a => a.genres || []))]" :key="genre">
+                        <span class="badge bg-secondary me-1" x-text="genre"></span>
+                      </template>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <a class="btn text-white" style="background-color:#1DB954;" target="_blank"
+                     :href="'https://open.spotify.com/search/' + encodeURIComponent(morceauActuel?.name || '')">
+                    Ouvrir dans Spotify
+                  </a>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+              </div>
+            </div>
           </div>
 
         </main>

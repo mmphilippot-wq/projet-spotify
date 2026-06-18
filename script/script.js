@@ -4,6 +4,20 @@ async function chargerMusiques() {
   return musiques;
 }
 
+function formaterDuree(ms) {
+  if (!ms) return "0:00";
+  const totalSecondes = Math.floor(ms / 1000);
+  const minutes = Math.floor(totalSecondes / 60);
+  const secondes = String(totalSecondes % 60).padStart(2, "0");
+  return `${minutes}:${secondes}`;
+}
+
+function formaterDate(dateStr) {
+  if (!dateStr) return "Date inconnue";
+  const date = new Date(dateStr);
+  return date.toLocaleDateString("fr-FR", { year: "numeric", month: "long", day: "numeric" });
+}
+
 function creerGraphiqueArtistes(musiques) {
   const compteur = {};
   musiques.forEach(morceau => {
