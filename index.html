@@ -13,7 +13,24 @@
     <div class="container-fluid px-0">
       <div class="row">
         <main class="col-12"
-              x-data="{ musiques: [], morceauActuel: null }"
+              x-data="{
+                musiques: [],
+                morceauActuel: null,
+                albumsUniques() {
+                  const vus = new Set();
+                  const albums = [];
+                  this.musiques.forEach(morceau => {
+                    if (!vus.has(morceau.album.id)) {
+                      vus.add(morceau.album.id);
+                      albums.push({
+                        ...morceau.album,
+                        artiste: morceau.artists.map(a => a.name).join(', ')
+                      });
+                    }
+                  });
+                  return albums.sort((a, b) => b.popularity - a.popularity);
+                }
+              }"
               x-init="chargerMusiques().then(data => { musiques = data; creerGraphiqueArtistes(data); creerGraphiqueGenres(data); })">
 
           <header class="p-4 mb-4 text-white text-center" style="background-color: #2f9eb1;">
@@ -28,7 +45,7 @@
                 <div class="col-md-6">
                   <div class="card shadow-sm h-100">
                     <div class="card-header text-white" style="background:#3b82c4;">
-                      Top 10 des artistes
+                      Top 10 des Artistes (nombre de morceaux)
                     </div>
                     <div class="card-body">
                       <canvas id="chartArtistes"></canvas>
@@ -37,8 +54,8 @@
                 </div>
                 <div class="col-md-6">
                   <div class="card shadow-sm h-100">
-                    <div class="card-header text-white" style="background:#3b82c4;">
-                      Distribution des genres musicaux
+                    <div class="card-header text-white" style="background:#0c6137;">
+                      Distribution des Genres
                     </div>
                     <div class="card-body">
                       <canvas id="chartGenres"></canvas>
@@ -89,7 +106,30 @@
               </div>
             </section>
 
+            <section class="mb-5">
+              <h2 class="mb-3">Albums Populaires</h2>
+              <div class="row g-3">
+                <template x-for="album in albumsUniques()" :key="album.id">
+                  <div class="col-6 col-md-4 col-lg-2">
+                    <div class="card shadow-sm h-100">
+                      <img :src="album.images?.[1]?.url || album.images?.[0]?.url" class="card-img-top" :alt="album.name">
+                      <div class="card-body">
+                        <h6 class="card-title mb-1" x-text="album.name"></h6>
+                        <p class="text-muted small mb-2" x-text="album.artiste"></p>
+                        <p class="text-muted small mb-2" x-text="formaterDate(album.release_date)"></p>
+                        <div class="d-flex gap-2">
+                          <span class="badge bg-primary" x-text="album.total_tracks + ' titres'"></span>
+                          <span class="badge bg-success" x-text="album.popularity + '/100'"></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </section>
+
           </div>
+
 
           <!-- Modale "Détails du morceau" -->
           <div class="modal fade" id="modalDetails" tabindex="-1" aria-hidden="true">
@@ -101,11 +141,11 @@
                 </div>
                 <div class="modal-body">
                   <div class="row g-4">
-                    <div class="col-md-4 text-center">
-                      <img :src="morceauActuel?.album?.images?.[2]?.url" class="img-fluid rounded mb-2"
+                    <div class="col-md-4">
+                      <img :src="morceauActuel?.album?.images?.[2]?.url" class="img-fluid rounded mb-2 d-block mx-auto"
                            :alt="morceauActuel?.album?.name">
-                      <h6 class="mb-0" x-text="morceauActuel?.album?.name"></h6>
-                      <p class="text-muted small mb-2">
+                      <h6 class="mb-0 text-start" x-text="morceauActuel?.album?.name"></h6>
+                      <p class="text-muted small mb-2 text-start">
                         <span x-text="formaterDate(morceauActuel?.album?.release_date)"></span>
                         • <span x-text="morceauActuel?.album?.total_tracks"></span> titres
                       </p>

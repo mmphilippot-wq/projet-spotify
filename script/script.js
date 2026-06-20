@@ -44,7 +44,22 @@ function creerGraphiqueArtistes(musiques) {
       }]
     },
     options: {
-      indexAxis: "y"
+      indexAxis: "y",
+      animation: false,
+      events: [],
+      plugins: {
+        legend: { display: false },
+        tooltip: { enabled: false }
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: "Nombre de morceaux",
+            align: "center"
+          }
+        }
+      }
     }
   });
 }
@@ -80,11 +95,14 @@ function creerGraphiqueGenres(musiques) {
       }]
     },
     options: {
+      animation: false,
+      events: [],
       plugins: {
         legend: {
           position: "right",
           align: "center"
-        }
+        },
+        tooltip: { enabled: false }
       }
     }
   });
