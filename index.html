@@ -69,8 +69,8 @@
               <div class="card shadow-sm">
                 <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2 text-white"
                      style="background:#3b82c4;">
-                  <span class="fw-semibold fs-5">Liste des Morceaux</span>
-                  <div class="input-group input-group-sm" style="max-width:260px;">
+                  <span class="fw-semibold fs-5 text-nowrap">Liste des Morceaux</span>
+                  <div class="input-group input-group-sm" style="max-width:260px; min-width:160px;">
                     <span class="input-group-text">🔍</span>
                     <input type="search" class="form-control" placeholder="Rechercher...">
                   </div>
@@ -80,19 +80,19 @@
                     <thead class="table-light">
                       <tr>
                         <th scope="col">Titre</th>
-                        <th scope="col">Artiste</th>
-                        <th scope="col">Album</th>
-                        <th scope="col">Action</th>
+                        <th scope="col" class="d-none d-sm-table-cell">Artiste</th>
+                        <th scope="col" class="d-none d-md-table-cell">Album</th>
+                        <th scope="col" class="text-nowrap">Action</th>
                       </tr>
                     </thead>
                     <tbody>
                       <template x-for="morceau in musiques" :key="morceau.id">
                         <tr>
                           <td class="fw-medium" x-text="morceau.name"></td>
-                          <td class="text-muted" x-text="morceau.artists.map(a => a.name).join(', ')"></td>
-                          <td class="text-muted" x-text="morceau.album.name"></td>
+                          <td class="text-muted d-none d-sm-table-cell" x-text="morceau.artists.map(a => a.name).join(', ')"></td>
+                          <td class="text-muted d-none d-md-table-cell" x-text="morceau.album.name"></td>
                           <td>
-                            <button type="button" class="btn btn-primary btn-sm"
+                            <button type="button" class="btn btn-primary btn-sm text-nowrap"
                                     @click="morceauActuel = morceau"
                                     data-bs-toggle="modal" data-bs-target="#modalDetails">
                               Détails
@@ -110,7 +110,7 @@
               <h2 class="mb-3">Albums Populaires</h2>
               <div class="row g-3">
                 <template x-for="album in albumsUniques()" :key="album.id">
-                  <div class="col-6 col-md-4 col-lg-2">
+                  <div class="col-12 col-lg-2">
                     <div class="card shadow-sm h-100">
                       <img :src="album.images?.[1]?.url || album.images?.[0]?.url" class="card-img-top" :alt="album.name">
                       <div class="card-body">
@@ -133,7 +133,7 @@
 
           <!-- Modale "Détails du morceau" -->
           <div class="modal fade" id="modalDetails" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title">Détails du morceau</h5>
@@ -154,9 +154,6 @@
 
                     <div class="col-md-8">
                       <h4 x-text="morceauActuel?.name"></h4>
-
-                      <p class="fw-semibold mt-3 mb-1">Preview audio</p>
-                      <audio :src="morceauActuel?.preview_url" controls class="w-100 mb-3"></audio>
 
                       <p class="fw-semibold mb-2">Informations sur le morceau</p>
                       <div class="d-flex justify-content-between border-bottom py-2">
@@ -217,10 +214,11 @@
       </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="script/script.js"></script>
     <footer class="text-white text-center py-3 mt-4" style="background-color:#000;">
       <small>&copy; J-music explorer — projet étudiant MMI</small>
-    </footer>   
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script/script.js"></script>
   </body>
 </html>
