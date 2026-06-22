@@ -155,6 +155,9 @@
                     <div class="col-md-8">
                       <h4 x-text="morceauActuel?.name"></h4>
 
+                      <p class="fw-semibold mt-3 mb-1">Preview audio</p>
+                      <audio :src="morceauActuel?.preview_url" controls class="w-100 mb-3"></audio>
+
                       <p class="fw-semibold mb-2">Informations sur le morceau</p>
                       <div class="d-flex justify-content-between border-bottom py-2">
                         <span>Durée</span>

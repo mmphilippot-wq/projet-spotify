@@ -98,6 +98,10 @@ function creerGraphiqueGenres(musiques) {
       animation: false,
       events: [],
       plugins: {
+        title: {
+          display: true,
+          text: "Distribution des genres musicaux"
+        },
         legend: {
           position: "right",
           align: "center"
